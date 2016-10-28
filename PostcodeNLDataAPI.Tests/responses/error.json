@@ -1,0 +1,5 @@
+﻿{
+    "exception": "Cannot find subscription with id #1234567.",
+    "exceptionId": "PostcodeNl_Controller_Subscription_UnknownSubscriptionException",
+    "requestId": "EQJKVW"
+}

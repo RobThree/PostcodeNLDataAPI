@@ -117,12 +117,15 @@ namespace PostcodeNLDataAPI
         /// <param name="baseUri">The base URI to use.</param>
         /// <param name="httpMessageHandler">The HTTP handler stack to use for sending requests.</param>
         /// <exception cref="ArgumentNullException">Thrown when either credentials or baseUri are null.</exception>
+        /// <exception cref="ArgumentException">Thrown when base uri is not an absolute uri.</exception>
         public PostcodeNL(NetworkCredential credentials, Uri baseUri, HttpMessageHandler httpMessageHandler)
         {
             if (credentials == null)
                 throw new ArgumentNullException(nameof(credentials));
             if (baseUri == null)
                 throw new ArgumentNullException(nameof(baseUri));
+            if (!baseUri.IsAbsoluteUri)
+                throw new ArgumentException("Base URI must be absolute", nameof(baseUri));
 
             _httpmessagehandler = httpMessageHandler;
             this.Credentials = credentials;
@@ -220,7 +223,7 @@ namespace PostcodeNLDataAPI
             if (string.IsNullOrWhiteSpace(deliveryId))
                 throw new ArgumentNullException(nameof(deliveryId));
 
-            return DoRequest<Delivery>(BuildUri($"subscription/deliveries/{Uri.EscapeUriString(deliveryId)}"));
+            return DoRequest<Delivery>(BuildUri($"subscription/deliveries/{Uri.EscapeDataString(deliveryId)}"));
         }
 
         /// <summary>
@@ -249,8 +252,12 @@ namespace PostcodeNLDataAPI
         /// <param name="delivery">The delivery to download.</param>
         /// <param name="fileName">The name of the file to be placed on the local computer.</param>
         /// <returns>Returns <see cref="Task"/>. The task object representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when delivery or filename is null.</exception>
         public Task DownloadDeliveryAsync(Delivery delivery, string fileName)
         {
+            if (delivery == null)
+                throw new ArgumentNullException(nameof(delivery));
+
             return DownloadFileAsync(delivery.DownloadUrl, fileName);
         }
 
@@ -260,8 +267,14 @@ namespace PostcodeNLDataAPI
         /// <param name="uri">The URI of the resource to download.</param>
         /// <param name="fileName">The name of the file to be placed on the local computer.</param>
         /// <returns>Returns <see cref="Task"/>. The task object representing the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when uri or filename is null.</exception>
         public Task DownloadFileAsync(Uri uri, string fileName)
         {
+            if (uri == null)
+                throw new ArgumentNullException(nameof(uri));
+            if (fileName == null)
+                throw new ArgumentNullException(nameof(fileName));
+
             using (var wc = new WebClient())
             {
                 return wc.DownloadFileTaskAsync(uri, fileName);
