@@ -13,12 +13,27 @@ using System.Threading.Tasks;
 
 namespace PostcodeNLDataAPI
 {
+    /// <summary>
+    /// Implementation of the Postcode.nl DATA API.
+    /// </summary>
     public class PostcodeNL
     {
+        /// <summary>
+        /// The <see cref="NetworkCredential">Credentials</see> to use.
+        /// </summary>
         public NetworkCredential Credentials { get; private set; }
-        public Uri BaseUri { get; set; }
+
+        /// <summary>
+        /// The base URI for to use.
+        /// </summary>
+        public Uri BaseUri { get; private set; }
+
+        /// <summary>
+        /// The default URI to use.
+        /// </summary>
         public static readonly Uri DEFAULTURI = new Uri("https://data.postcode.nl/rest/");
         
+
         internal const string DATETIMEFORMAT = "yyyyMMdd";
 
         private static readonly JsonSerializerSettings _serializersettings = new JsonSerializerSettings
@@ -30,15 +45,35 @@ namespace PostcodeNLDataAPI
             MissingMemberHandling = MissingMemberHandling.Ignore,
         };
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostcodeNL"/> class.
+        /// </summary>
+        /// <param name="userName">The username (or 'key') to use.</param>
+        /// <param name="password">The password (or 'secret') to use.</param>
         public PostcodeNL(string userName, string password)
             : this(new NetworkCredential(userName, password)) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostcodeNL"/> class.
+        /// </summary>
+        /// <param name="userName">The username (or 'key') to use.</param>
+        /// <param name="password">The password (or 'secret') to use.</param>
+        /// <param name="baseUri">The base URI to use.</param>
         public PostcodeNL(string userName, string password, Uri baseUri)
             : this(new NetworkCredential(userName, password), baseUri) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostcodeNL"/> class using the default base URI.
+        /// </summary>
+        /// <param name="credentials">The credentials to use.</param>
         public PostcodeNL(NetworkCredential credentials)
             : this(credentials, DEFAULTURI) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostcodeNL"/> class.
+        /// </summary>
+        /// <param name="credentials">The credentials to use.</param>
+        /// <param name="baseUri">The base URI to use.</param>
         public PostcodeNL(NetworkCredential credentials, Uri baseUri)
         {
             this.Credentials = credentials;
@@ -81,16 +116,37 @@ namespace PostcodeNLDataAPI
             }
         }
 
+        /// <summary>
+        /// Retrieves the specified subscription account.
+        /// </summary>
+        /// <param name="accountId">Identifier of the subscription account to return.</param>
+        /// <returns>Returns the specified subscription account.</returns>
         public Task<Account> GetAccountAsync(long accountId)
         {
             return DoRequest<Account>(BuildUri($"subscription/accounts/{accountId}"));
         }
 
-        public Task<IEnumerable<Account>> ListAccountsAsync()
+
+        /// <summary>
+        /// Retrieves the subscription accounts available to the client; optionally filtered by productcode.
+        /// </summary>
+        /// <param name="productCode">Productcode filter; return only products with this productcode.</param>
+        /// <returns>Returns the subscription accounts available to the client.</returns>
+        public Task<IEnumerable<Account>> ListAccountsAsync(string productCode = null)
         {
-            return DoRequest<IEnumerable<Account>>(BuildUri("subscription/accounts"));
+            var nvc = new NameValueCollection();
+            if (productCode != null)
+                nvc["productCode"] = productCode;
+
+            return DoRequest<IEnumerable<Account>>(BuildUri("subscription/accounts", nvc));
         }
 
+
+        /// <summary>
+        /// Retrieves the specified delivery.
+        /// </summary>
+        /// <param name="deliveryId">Identifier of the delivery to return.</param>
+        /// <returns>Returns the specified delivery.</returns>
         public Task<Delivery> GetDeliveryAsync(string deliveryId)
         {
             if (string.IsNullOrEmpty(deliveryId))
@@ -99,6 +155,11 @@ namespace PostcodeNLDataAPI
             return DoRequest<Delivery>(BuildUri($"subscription/deliveries/{Uri.EscapeUriString(deliveryId)}"));
         }
 
+        /// <summary>
+        /// Retrieves a list of all deliveries based on a <see cref="DeliveriesQuery"/>.
+        /// </summary>
+        /// <param name="query">The filtering options to use when retrieving the deliveries.</param>
+        /// <returns>Returns the deliveries filtered by the given <see cref="DeliveriesQuery"/>.</returns>
         public Task<IEnumerable<Delivery>> ListDeliveriesAsync(DeliveriesQuery query)
         {
             if (query == null)
@@ -112,11 +173,23 @@ namespace PostcodeNLDataAPI
             return DoRequest<IEnumerable<Delivery>>(BuildUri("subscription/deliveries", nvc));
         }
 
+        /// <summary>
+        /// Downloads the specified <see cref="Delivery"/> to a local file as an asynchronous operation using a task object.
+        /// </summary>
+        /// <param name="delivery">The delivery to download.</param>
+        /// <param name="fileName">The name of the file to be placed on the local computer.</param>
+        /// <returns>Returns <see cref="Task"/>. The task object representing the asynchronous operation.</returns>
         public Task DownloadDeliveryAsync(Delivery delivery, string fileName)
         {
             return DownloadFileAsync(delivery.DownloadUrl, fileName);
         }
 
+        /// <summary>
+        /// Downloads the specified resource to a local file as an asynchronous operation using a task object.
+        /// </summary>
+        /// <param name="uri">The URI of the resource to download.</param>
+        /// <param name="fileName">The name of the file to be placed on the local computer.</param>
+        /// <returns>Returns <see cref="Task"/>. The task object representing the asynchronous operation.</returns>
         public Task DownloadFileAsync(Uri uri, string fileName)
         {
             using (var wc = new WebClient())
