@@ -17,7 +17,7 @@ namespace PostcodeNLDataAPI.Tests
         {
             var handler = new FakeResponseHandler()
                 .AddEmptyResponse(new Uri(PostcodeNL.DEFAULTURI, "subscription/accounts"), HttpStatusCode.Unauthorized);
-            
+
             var target = new PostcodeNL("unauth", "testunauth", handler);
             await target.ListAccountsAsync();
         }
@@ -60,6 +60,47 @@ namespace PostcodeNLDataAPI.Tests
         }
 
         [TestMethod]
+        public async Task GetAccountsAsync_ShouldParseMinimalObjectCorrectly()
+        {
+            // Taken from documentation page 4; all nullable fields are not in the response/json
+            var handler = new FakeResponseHandler()
+                .AddJsonResponse(new Uri(PostcodeNL.DEFAULTURI, "subscription/accounts/123456789012"), File.ReadAllText("responses/minimalaccount.json"));
+
+            var pcnl = new PostcodeNL("test", "test", handler);
+            var account = await pcnl.GetAccountAsync(123456789012);
+
+            Assert.AreEqual(123456789012, account.Id);
+            Assert.AreEqual("X", account.ProductCode);
+            Assert.AreEqual("Y", account.ProductName);
+            Assert.AreEqual(new DateTime(2014, 3, 3), account.SubscriptionStart);
+            Assert.AreEqual(new DateTime(2014, 3, 4), account.SubscriptionEnd);
+            Assert.IsNull(account.LastDeliveryComplete);
+            Assert.IsNull(account.LastDeliveryMutation);
+            Assert.IsNull(account.NextDeliveryComplete);
+            Assert.IsNull(account.NextDeliveryMutation);
+        }
+
+        [TestMethod]
+        public async Task GetDeliveryAsync_ShouldParseMinimalObjectCorrectly()
+        {
+            // Taken from documentation page 4; all nullable fields are not in the response/json
+            var handler = new FakeResponseHandler()
+                .AddJsonResponse(new Uri(PostcodeNL.DEFAULTURI, "subscription/deliveries/abc"), File.ReadAllText("responses/minimaldelivery.json"));
+
+            var pcnl = new PostcodeNL("test", "test", handler);
+            var delivery = await pcnl.GetDeliveryAsync("abc");
+
+            Assert.AreEqual("abc", delivery.Id);
+            Assert.AreEqual(1, delivery.AccountId);
+            Assert.AreEqual("X", delivery.ProductCode);
+            Assert.AreEqual("Y", delivery.ProductName);
+            Assert.AreEqual(DeliveryType.Mutation, delivery.DeliveryType);
+            Assert.AreEqual(new DateTime(2015, 1, 1), delivery.DeliveryTarget);
+            Assert.AreEqual(new Uri("https://retrieve.postcode.nl/abc"), delivery.DownloadUrl);
+            Assert.AreEqual(5, delivery.DownloadCount);
+        }
+
+        [TestMethod]
         public async Task ListDeliveriesAsync_ShouldParseCorrectly()
         {
             // Taken from documentation page 9
@@ -98,7 +139,8 @@ namespace PostcodeNLDataAPI.Tests
             {
                 var accounts = await pcnl.GetAccountAsync(1234567);
                 Assert.Fail("Exception should have been thrown");
-            } catch (PostcodeNLException ex)
+            }
+            catch (PostcodeNLException ex)
             {
                 Assert.AreEqual("Cannot find subscription with id #1234567.", ex.Message);
                 Assert.AreEqual("PostcodeNl_Controller_Subscription_UnknownSubscriptionException", ex.ExceptionId);

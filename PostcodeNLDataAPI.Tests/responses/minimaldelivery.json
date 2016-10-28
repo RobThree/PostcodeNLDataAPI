@@ -1,0 +1,10 @@
+﻿{
+    "deliveryId": "abc",
+    "accountId": 1,
+    "productCode": "X",
+    "productName": "Y",
+    "deliveryType": "mutation",
+    "deliveryTarget": "20150101",
+    "downloadUrl": "https://retrieve.postcode.nl/abc",
+    "downloads": 5
+}
