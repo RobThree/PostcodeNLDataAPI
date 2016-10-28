@@ -30,6 +30,27 @@ pcnl.DownloadDeliveryAsync(delivery, @"D:\foo\bar\file.zip");
 
 Couldn't be more simple.
 
+## PostcodeNLDownloader
+
+Also in this repository is an "example application" which demonstrates a simple use-case of the PostcodeNLDataAPI. It is a Command Line Interface (CLI) utility to download the latest version of a database. You can download all your subscriptions or just the one specified (using `-p`) and you can choose between 'mutation' and 'complete'. Do keep in mind that this application is for demonstration purposes only an may change at any given time. If you run the application from the commandline you'll see it's usage explained a little more detailed:
+
+```
+Usage: PostcodeNLDownloader [arguments] [options]
+
+Arguments:
+  key           Your postcode.nl key (or username)
+  secret        Your postcode.nl secret (or password)
+  path          The destination download directory
+  deliverytype  Either 'mutation' or 'complete'
+
+Options:
+  -p  | --productcode  Use to download specific productcode
+  -o  | --overwrite    (Force) Overwrite existing files
+  -vv | --verbose      Verbose
+  -h  | --help         Show help information
+  -v  | --version      Show version information
+```
+
 ## Test Suite
 
 [![Build status](https://ci.appveyor.com/api/projects/status/iq9vaikslv4ru67k?svg=true)](https://ci.appveyor.com/project/RobIII/postcodenldataapi)
