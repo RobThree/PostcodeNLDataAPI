@@ -32,7 +32,8 @@ namespace PostcodeNLDataAPI
         /// The default URI to use.
         /// </summary>
         public static readonly Uri DEFAULTURI = new Uri("https://data.postcode.nl/rest/");
-        
+
+        private HttpMessageHandler _httpmessagehandler = null;
 
         internal const string DATETIMEFORMAT = "yyyyMMdd";
 
@@ -54,6 +55,15 @@ namespace PostcodeNLDataAPI
             : this(new NetworkCredential(userName, password)) { }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="PostcodeNL"/> class using the default base URI with a specific handler.
+        /// </summary>
+        /// <param name="userName">The username (or 'key') to use.</param>
+        /// <param name="password">The password (or 'secret') to use.</param>
+        /// <param name="httpMessageHandler">The HTTP handler stack to use for sending requests.</param>
+        public PostcodeNL(string userName, string password, HttpMessageHandler httpMessageHandler)
+            : this(new NetworkCredential(userName, password), httpMessageHandler) { }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="PostcodeNL"/> class.
         /// </summary>
         /// <param name="userName">The username (or 'key') to use.</param>
@@ -61,7 +71,18 @@ namespace PostcodeNLDataAPI
         /// <param name="baseUri">The base URI to use.</param>
         /// <exception cref="ArgumentNullException">Thrown when baseUri is null.</exception>
         public PostcodeNL(string userName, string password, Uri baseUri)
-            : this(new NetworkCredential(userName, password), baseUri) { }
+            : this(new NetworkCredential(userName, password), baseUri, null) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostcodeNL"/> class with a specific handler.
+        /// </summary>
+        /// <param name="userName">The username (or 'key') to use.</param>
+        /// <param name="password">The password (or 'secret') to use.</param>
+        /// <param name="baseUri">The base URI to use.</param>
+        /// <param name="httpMessageHandler">The HTTP handler stack to use for sending requests.</param>
+        /// <exception cref="ArgumentNullException">Thrown when baseUri is null.</exception>
+        public PostcodeNL(string userName, string password, Uri baseUri, HttpMessageHandler httpMessageHandler)
+            : this(new NetworkCredential(userName, password), baseUri, httpMessageHandler) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostcodeNL"/> class using the default base URI.
@@ -72,18 +93,38 @@ namespace PostcodeNLDataAPI
             : this(credentials, DEFAULTURI) { }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="PostcodeNL"/> class using the default base URI with a specific handler.
+        /// </summary>
+        /// <param name="credentials">The credentials to use.</param>
+        /// <param name="httpMessageHandler">The HTTP handler stack to use for sending requests.</param>
+        /// <exception cref="ArgumentNullException">Thrown when credentials are null.</exception>
+        public PostcodeNL(NetworkCredential credentials, HttpMessageHandler httpMessageHandler)
+            : this(credentials, DEFAULTURI, httpMessageHandler) { }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="PostcodeNL"/> class.
         /// </summary>
         /// <param name="credentials">The credentials to use.</param>
         /// <param name="baseUri">The base URI to use.</param>
         /// <exception cref="ArgumentNullException">Thrown when either credentials or baseUri are null.</exception>
         public PostcodeNL(NetworkCredential credentials, Uri baseUri)
+            : this(credentials, baseUri, null) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostcodeNL"/> class with a specific handler.
+        /// </summary>
+        /// <param name="credentials">The credentials to use.</param>
+        /// <param name="baseUri">The base URI to use.</param>
+        /// <param name="httpMessageHandler">The HTTP handler stack to use for sending requests.</param>
+        /// <exception cref="ArgumentNullException">Thrown when either credentials or baseUri are null.</exception>
+        public PostcodeNL(NetworkCredential credentials, Uri baseUri, HttpMessageHandler httpMessageHandler)
         {
             if (credentials == null)
                 throw new ArgumentNullException(nameof(credentials));
             if (baseUri == null)
                 throw new ArgumentNullException(nameof(baseUri));
 
+            _httpmessagehandler = httpMessageHandler;
             this.Credentials = credentials;
             this.BaseUri = baseUri;
         }
@@ -101,7 +142,7 @@ namespace PostcodeNLDataAPI
             if (uri == null)
                 throw new ArgumentNullException(nameof(uri));
 
-            using (var client = new HttpClient())
+            using (var client = _httpmessagehandler == null ? new HttpClient() : new HttpClient(_httpmessagehandler))
             {
                 client.BaseAddress = this.BaseUri;
 
@@ -111,7 +152,10 @@ namespace PostcodeNLDataAPI
                 // Execute GET request
                 using (var response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead))
                 {
-                    var content = await response.Content.ReadAsStringAsync();
+                    string content = null;
+                    if (response.Content != null)
+                        content = await response.Content.ReadAsStringAsync();
+
                     // Was the request successful?
                     if (response.IsSuccessStatusCode)
                     {

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostcodeNLDataAPI", "Postco
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp", "DemoApp\DemoApp.csproj", "{B43569E5-FF46-4CA4-B3CB-DA8F1F6A2F8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostcodeNLDataAPI.Tests", "PostcodeNLDataAPI.Tests\PostcodeNLDataAPI.Tests.csproj", "{B4DCEE16-AD64-4773-B16C-8B8F8BE68607}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B43569E5-FF46-4CA4-B3CB-DA8F1F6A2F8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B43569E5-FF46-4CA4-B3CB-DA8F1F6A2F8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B43569E5-FF46-4CA4-B3CB-DA8F1F6A2F8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4DCEE16-AD64-4773-B16C-8B8F8BE68607}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4DCEE16-AD64-4773-B16C-8B8F8BE68607}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4DCEE16-AD64-4773-B16C-8B8F8BE68607}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4DCEE16-AD64-4773-B16C-8B8F8BE68607}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

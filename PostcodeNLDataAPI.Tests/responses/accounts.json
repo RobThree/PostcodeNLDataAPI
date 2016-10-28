@@ -1,0 +1,24 @@
+﻿[
+    {
+        "accountId": 12646,
+        "productCode": "GEO-4PP-Y",
+        "productName": "Geographical wijkcode yearly updates.",
+        "periodBegin": "20140101",
+        "periodEnd": "20160101",
+        "lastDeliveryComplete": "20140101",
+        "lastDeliveryMutation": null,
+        "nextDeliveryComplete": "20150101",
+        "nextDeliveryMutation": null
+    },
+    {
+        "accountId": 12647,
+        "productCode": "PCTP-ACU-W",
+        "productName": "PCTP-BAG \"ASCII-compatibel\" standard choice.",
+        "periodBegin": "20140303",
+        "periodEnd": "20140302",
+        "lastDeliveryComplete": "20140303",
+        "lastDeliveryMutation": "20150119",
+        "nextDeliveryComplete": null,
+        "nextDeliveryMutation": "20150126"
+    }
+]
