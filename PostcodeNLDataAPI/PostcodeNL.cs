@@ -46,7 +46,7 @@ namespace PostcodeNLDataAPI
         };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostcodeNL"/> class.
+        /// Initializes a new instance of the <see cref="PostcodeNL"/> class using the default base URI.
         /// </summary>
         /// <param name="userName">The username (or 'key') to use.</param>
         /// <param name="password">The password (or 'secret') to use.</param>
@@ -59,6 +59,7 @@ namespace PostcodeNLDataAPI
         /// <param name="userName">The username (or 'key') to use.</param>
         /// <param name="password">The password (or 'secret') to use.</param>
         /// <param name="baseUri">The base URI to use.</param>
+        /// <exception cref="ArgumentNullException">Thrown when baseUri is null.</exception>
         public PostcodeNL(string userName, string password, Uri baseUri)
             : this(new NetworkCredential(userName, password), baseUri) { }
 
@@ -66,6 +67,7 @@ namespace PostcodeNLDataAPI
         /// Initializes a new instance of the <see cref="PostcodeNL"/> class using the default base URI.
         /// </summary>
         /// <param name="credentials">The credentials to use.</param>
+        /// <exception cref="ArgumentNullException">Thrown when credentials are null.</exception>
         public PostcodeNL(NetworkCredential credentials)
             : this(credentials, DEFAULTURI) { }
 
@@ -74,8 +76,14 @@ namespace PostcodeNLDataAPI
         /// </summary>
         /// <param name="credentials">The credentials to use.</param>
         /// <param name="baseUri">The base URI to use.</param>
+        /// <exception cref="ArgumentNullException">Thrown when either credentials or baseUri are null.</exception>
         public PostcodeNL(NetworkCredential credentials, Uri baseUri)
         {
+            if (credentials == null)
+                throw new ArgumentNullException(nameof(credentials));
+            if (baseUri == null)
+                throw new ArgumentNullException(nameof(baseUri));
+
             this.Credentials = credentials;
             this.BaseUri = baseUri;
         }
@@ -86,6 +94,8 @@ namespace PostcodeNLDataAPI
         /// <typeparam name="T">The type to return.</typeparam>
         /// <param name="uri">The URI to GET.</param>
         /// <returns>Returns the desired parsed result.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when uri is null.</exception>
+        /// <exception cref="PostcodeNLException">Thrown when request fails.</exception>
         private async Task<T> DoRequest<T>(Uri uri)
         {
             if (uri == null)
@@ -98,26 +108,33 @@ namespace PostcodeNLDataAPI
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{this.Credentials.UserName}:{this.Credentials.Password}")));
 
-                var response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead);
-                var content = await response.Content.ReadAsStringAsync();
-                if (response.IsSuccessStatusCode)
+                // Execute GET request
+                using (var response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead))
                 {
-                    return JsonConvert.DeserializeObject<T>(content, _serializersettings);
-                }
-                else
-                {
-                    ExceptionDetails exceptiondetails  = null;
-                    // Try deserializing the exception details (if any)
-                    try
+                    var content = await response.Content.ReadAsStringAsync();
+                    // Was the request successful?
+                    if (response.IsSuccessStatusCode)
                     {
-                        exceptiondetails = JsonConvert.DeserializeObject<ExceptionDetails>(content, _serializersettings);
+                        // It was; parse the returned JSON content and return the desired object
+                        return JsonConvert.DeserializeObject<T>(content, _serializersettings);
                     }
-                    catch
+                    else
                     {
-                        // Well, that failed... Create a "generic" exception
-                        exceptiondetails = new ExceptionDetails { Exception = "Error executing request" };
+                        // Request failed; let's throw as much information as we can...
+
+                        // Try deserializing the exception details (if any)
+                        ExceptionDetails exceptiondetails = null;
+                        try
+                        {
+                            exceptiondetails = JsonConvert.DeserializeObject<ExceptionDetails>(content, _serializersettings);
+                        }
+                        catch
+                        {
+                            // Well, apparently the response wasn't an "error JSON document"... Create a "generic" exception
+                            exceptiondetails = new ExceptionDetails { Exception = "Error executing request" };
+                        }
+                        throw new PostcodeNLException(exceptiondetails, uri, response);
                     }
-                    throw new PostcodeNLException(exceptiondetails, uri, response);
                 }
             }
         }
@@ -153,9 +170,10 @@ namespace PostcodeNLDataAPI
         /// </summary>
         /// <param name="deliveryId">Identifier of the delivery to return.</param>
         /// <returns>Returns the specified delivery.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when deliveryId is null or whitespace.</exception>
         public Task<Delivery> GetDeliveryAsync(string deliveryId)
         {
-            if (string.IsNullOrEmpty(deliveryId))
+            if (string.IsNullOrWhiteSpace(deliveryId))
                 throw new ArgumentNullException(nameof(deliveryId));
 
             return DoRequest<Delivery>(BuildUri($"subscription/deliveries/{Uri.EscapeUriString(deliveryId)}"));
@@ -166,6 +184,8 @@ namespace PostcodeNLDataAPI
         /// </summary>
         /// <param name="query">The filtering options to use when retrieving the deliveries.</param>
         /// <returns>Returns the deliveries filtered by the given <see cref="DeliveriesQuery"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when query is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when query represents no actual filter arguments.</exception>
         public Task<IEnumerable<Delivery>> ListDeliveriesAsync(DeliveriesQuery query)
         {
             if (query == null)
@@ -210,6 +230,8 @@ namespace PostcodeNLDataAPI
         /// <param name="path">The relative path.</param>
         /// <param name="query">Querystring arguments (key/value pairs).</param>
         /// <returns>Returns a composed ("built") uri.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when path is null or empty.</exception>
+        /// <exception cref="PostcodeNLException">Thrown when the baseuri + path results in an invalid URI.</exception>
         private Uri BuildUri(string path, NameValueCollection query = null)
         {
             if (string.IsNullOrEmpty(path))
