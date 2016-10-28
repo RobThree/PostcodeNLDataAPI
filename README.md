@@ -29,3 +29,8 @@ pcnl.DownloadDeliveryAsync(delivery, @"D:\foo\bar\file.zip");
 ```
 
 Couldn't be more simple.
+
+## Test Suite
+
+[![Build status](https://ci.appveyor.com/api/projects/status/iq9vaikslv4ru67k?svg=true)](https://ci.appveyor.com/project/RobIII/postcodenldataapi)
+                 
