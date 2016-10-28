@@ -80,6 +80,12 @@ namespace PostcodeNLDataAPI
             this.BaseUri = baseUri;
         }
 
+        /// <summary>
+        /// Executes the given request to postcode.nl and returns the desired type.
+        /// </summary>
+        /// <typeparam name="T">The type to return.</typeparam>
+        /// <param name="uri">The URI to GET.</param>
+        /// <returns>Returns the desired parsed result.</returns>
         private async Task<T> DoRequest<T>(Uri uri)
         {
             if (uri == null)
@@ -198,6 +204,12 @@ namespace PostcodeNLDataAPI
             }
         }
 
+        /// <summary>
+        /// Builds a uri based on this instance's Base Uri and a given (relative) path with optional querystring arguments.
+        /// </summary>
+        /// <param name="path">The relative path.</param>
+        /// <param name="query">Querystring arguments (key/value pairs).</param>
+        /// <returns>Returns a composed ("built") uri.</returns>
         private Uri BuildUri(string path, NameValueCollection query = null)
         {
             if (string.IsNullOrEmpty(path))
@@ -219,6 +231,9 @@ namespace PostcodeNLDataAPI
         }
     }
 
+    /// <summary>
+    /// For internal use only; used to deserialize exception details from the 'backend' (e.g. postcode.nl) into a <see cref="PostcodeNLException"/>.
+    /// </summary>
     internal class ExceptionDetails
     {
         [JsonProperty(PropertyName = "exception")]
