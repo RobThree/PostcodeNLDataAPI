@@ -1,5 +1,5 @@
 # ![Logo](https://raw.githubusercontent.com/RobThree/PostcodeNLDataAPI/master/postcode-logo-trimmed.png) Postcode.nl DATA API
-(Unofficial) A .Net Postcode.nl DATA API implementation (implemented version `1.0r83` of the official documentation).
+An (**unofficial**) .Net Postcode.nl DATA API implementation (implemented version `1.0r83` of the official documentation).
 
 # Usage
 
