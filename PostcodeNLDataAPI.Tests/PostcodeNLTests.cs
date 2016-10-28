@@ -22,7 +22,7 @@ namespace PostcodeNLDataAPI.Tests
         }
 
         [TestMethod]
-        public async Task CorrectCredentials_Should_Throw()
+        public async Task ListAccountsAsync_ShouldParseCorrectly()
         {
             var handler = new FakeResponseHandler()
                 .AddJsonResponse(new Uri(PostcodeNL.DEFAULTURI, "subscription/accounts"), File.ReadAllText("responses/accounts.json"));
