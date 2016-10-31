@@ -27,7 +27,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="PostcodeNLDataAPI\bin\Release\PostcodeNLDataAPI.dll" target="lib\net462" />
-    <file src="PostcodeNLDataAPI\bin\Release\PostcodeNLDataAPI.XML" target="lib\net451" />
+    <file src="bin\Release\PostcodeNLDataAPI.dll" target="lib\net462" />
+    <file src="bin\Release\PostcodeNLDataAPI.XML" target="lib\net462" />
   </files>
 </package>
