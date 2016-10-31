@@ -22,6 +22,9 @@
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Net.Http" targetFramework="net40" />
     </frameworkAssemblies>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="9.0.1" />
+    </dependencies>
   </metadata>
   <files>
     <file src="PostcodeNLDataAPI\bin\Release\PostcodeNLDataAPI.dll" target="lib\net462" />
