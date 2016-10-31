@@ -47,7 +47,7 @@ namespace PostcodeNLDataAPI.Entities
         /// <summary>
         /// Gets/sets the last created 'mutation' delivery, or null if none.
         /// </summary>
-        [JsonProperty(PropertyName = "lastDeliverMutation")]
+        [JsonProperty(PropertyName = "lastDeliveryMutation")]
         public DateTime? LastDeliveryMutation { get; set; }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace PostcodeNLDataAPI.Entities
         /// <summary>
         /// Gets/sets the next scheduled 'mutation' delivery, or null if none.
         /// </summary>
-        [JsonProperty(PropertyName = "nextDeliverMutation")]
+        [JsonProperty(PropertyName = "nextDeliveryMutation")]
         public DateTime? NextDeliveryMutation { get; set; }
     }
 }

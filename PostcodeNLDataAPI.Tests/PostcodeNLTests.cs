@@ -30,9 +30,36 @@ namespace PostcodeNLDataAPI.Tests
                 .AddJsonResponse(new Uri(PostcodeNL.DEFAULTURI, "subscription/accounts"), File.ReadAllText("responses/accounts.json"));
 
             var pcnl = new PostcodeNL("test", "test", handler);
-            var accounts = await pcnl.ListAccountsAsync();
+            var accounts = (await pcnl.ListAccountsAsync()).ToArray();
 
-            Assert.AreEqual(2, accounts.Count());
+            Assert.AreEqual(2, accounts.Length);
+
+            Assert.AreEqual(12646, accounts[0].Id);
+            Assert.AreEqual(12647, accounts[1].Id);
+
+            Assert.AreEqual("GEO-4PP-Y", accounts[0].ProductCode);
+            Assert.AreEqual("PCTP-ACU-W", accounts[1].ProductCode);
+
+            Assert.AreEqual("Geographical wijkcode yearly updates.", accounts[0].ProductName);
+            Assert.AreEqual("PCTP-BAG \"ASCII-compatibel\" standard choice.", accounts[1].ProductName);
+
+            Assert.AreEqual(new DateTime(2014, 1, 1), accounts[0].SubscriptionStart);
+            Assert.AreEqual(new DateTime(2014, 3, 3), accounts[1].SubscriptionStart);
+
+            Assert.AreEqual(new DateTime(2016, 1, 1), accounts[0].SubscriptionEnd);
+            Assert.AreEqual(new DateTime(2014, 3, 2), accounts[1].SubscriptionEnd);
+
+            Assert.AreEqual(new DateTime(2014, 1, 1), accounts[0].LastDeliveryComplete);
+            Assert.AreEqual(new DateTime(2014, 3, 3), accounts[1].LastDeliveryComplete);
+
+            Assert.IsNull(accounts[0].LastDeliveryMutation);
+            Assert.AreEqual(new DateTime(2015, 1, 19), accounts[1].LastDeliveryMutation);
+
+            Assert.AreEqual(new DateTime(2015, 1, 1), accounts[0].NextDeliveryComplete);
+            Assert.IsNull(accounts[1].NextDeliveryComplete);
+
+            Assert.IsNull(accounts[0].NextDeliveryMutation);
+            Assert.AreEqual(new DateTime(2015, 1, 26), accounts[1].NextDeliveryMutation);
         }
 
         [TestMethod]
