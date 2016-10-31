@@ -135,9 +135,36 @@ namespace PostcodeNLDataAPI.Tests
                 .AddJsonResponse(new Uri(PostcodeNL.DEFAULTURI, "subscription/deliveries?deliveryType=mutation&after=20141229"), File.ReadAllText("responses/deliveries.json"));
 
             var pcnl = new PostcodeNL("test", "test", handler);
-            var deliveries = await pcnl.ListDeliveriesAsync(new DeliveriesQuery { DeliveryType = DeliveryType.Mutation, After = new DateTime(2014, 12, 29) });
+            var deliveries = (await pcnl.ListDeliveriesAsync(new DeliveriesQuery { DeliveryType = DeliveryType.Mutation, After = new DateTime(2014, 12, 29) })).ToArray();
 
-            Assert.AreEqual(2, deliveries.Count());
+            Assert.AreEqual(2, deliveries.Length);
+
+            Assert.AreEqual("aca76d844cbd999358475d9fe164d346", deliveries[0].Id);
+            Assert.AreEqual("80e5b3f23d20fc0e237e61b644d1e891", deliveries[1].Id);
+
+            Assert.AreEqual(12647, deliveries[0].AccountId);
+            Assert.AreEqual(12647, deliveries[1].AccountId);
+
+            Assert.AreEqual("PCTP-ACU-W", deliveries[0].ProductCode);
+            Assert.AreEqual("PCTP-ACU-W", deliveries[1].ProductCode);
+
+            Assert.AreEqual("PCTP-BAG \"ASCII-compatibel\" standard choice.", deliveries[0].ProductName);
+            Assert.AreEqual("PCTP-BAG \"ASCII-compatibel\" standard choice.", deliveries[1].ProductName);
+
+            Assert.AreEqual(DeliveryType.Mutation, deliveries[0].DeliveryType);
+            Assert.AreEqual(DeliveryType.Mutation, deliveries[1].DeliveryType);
+
+            Assert.AreEqual(new DateTime(2015, 1, 12), deliveries[0].DeliverySource);
+            Assert.AreEqual(new DateTime(2015, 1, 5), deliveries[1].DeliverySource);
+
+            Assert.AreEqual(new DateTime(2015, 1, 19), deliveries[0].DeliveryTarget);
+            Assert.AreEqual(new DateTime(2015, 1, 12), deliveries[1].DeliveryTarget);
+
+            Assert.AreEqual("https://retrieve.postcode.nl/aca76d844cbd999358475d9fe164d346", deliveries[0].DownloadUrl.AbsoluteUri);
+            Assert.AreEqual("https://retrieve.postcode.nl/80e5b3f23d20fc0e237e61b644d1e891", deliveries[1].DownloadUrl.AbsoluteUri);
+
+            Assert.AreEqual(0, deliveries[0].DownloadCount);
+            Assert.AreEqual(1, deliveries[1].DownloadCount);
         }
 
         [TestMethod]
