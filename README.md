@@ -1,7 +1,21 @@
 # ![Logo](https://raw.githubusercontent.com/RobThree/PostcodeNLDataAPI/master/postcode-logo-trimmed.png) Postcode.nl DATA API
-An (**unofficial**) .Net Postcode.nl DATA API implementation (implemented version `1.0r83` of the official documentation).
+An (**unofficial**) .Net Postcode.nl DATA API implementation (implemented version `1.0r83` of the official documentation). Available as [NuGet package](https://www.nuget.org/packages/PostcodeNLDataAPI).
 
 # Usage
+
+Install the nuget package:
+
+```cmd
+Install-Package PostcodeNLDataAPI
+```
+
+Add a `using` statement:
+
+```c#
+using PostcodeNLDataAPI;
+```
+
+Then you can use the `PostcodeNL` object:
 
 ```c#
 // Create a new instance of the PostcodeNL class; this will be used
