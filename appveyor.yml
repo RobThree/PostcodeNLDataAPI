@@ -1,0 +1,15 @@
+version: 1.0.0.{build}
+
+assembly_info:
+  patch: true
+  file: AssemblyInfo.*
+  assembly_version: "{version}"
+  assembly_file_version: "{version}"
+  assembly_informational_version: "{version}"
+
+deploy:
+  provider: NuGet
+  api_key:
+    secure: ZTSMbxq1PJ3ZV6jWoG+AFSMkdqQUxgk8Wx5raFAt9tfNVpcRrhmGkxcjAZXPDA7T
+  skip_symbols: false
+  artifact: /.*\.nupkg/
