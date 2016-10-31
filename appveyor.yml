@@ -1,5 +1,8 @@
 version: 1.0.0.{build}
 
+environment:
+  packageVersion: 1.0.0
+  
 configuration: Release
 
 init:
