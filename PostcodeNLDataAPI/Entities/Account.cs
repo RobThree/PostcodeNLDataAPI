@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace PostcodeNLDataAPI.Entities
 {
@@ -11,55 +11,55 @@ namespace PostcodeNLDataAPI.Entities
         /// <summary>
         /// Gets/sets the identifier for this specific account.
         /// </summary>
-        [JsonProperty(PropertyName = "accountId")]
+        [JsonPropertyName("accountId")]
         public long Id { get; set; }
 
         /// <summary>
         /// Gets/sets a unique string defining the product.
         /// </summary>
-        [JsonProperty(PropertyName = "productCode")]
+        [JsonPropertyName("productCode")]
         public string ProductCode { get; set; }
 
         /// <summary>
         /// Gets/sets a short description of the product.
         /// </summary>
-        [JsonProperty(PropertyName = "productName")]
+        [JsonPropertyName("productName")]
         public string ProductName { get; set; }
 
         /// <summary>
         /// Gets/sets the starting reference data of the subscription.
         /// </summary>
-        [JsonProperty(PropertyName = "periodBegin")]
+        [JsonPropertyName("periodBegin")]
         public DateTime SubscriptionStart { get; set; }
 
         /// <summary>
         /// Gets/sets the ending reference data of the subscription.
         /// </summary>
-        [JsonProperty(PropertyName = "periodEnd")]
+        [JsonPropertyName("periodEnd")]
         public DateTime SubscriptionEnd { get; set; }
 
         /// <summary>
         /// Gets/sets the last created 'complete' delivery, or null if none.
         /// </summary>
-        [JsonProperty(PropertyName = "lastDeliveryComplete")]
+        [JsonPropertyName("lastDeliveryComplete")]
         public DateTime? LastDeliveryComplete { get; set; }
         
         /// <summary>
         /// Gets/sets the last created 'mutation' delivery, or null if none.
         /// </summary>
-        [JsonProperty(PropertyName = "lastDeliveryMutation")]
+        [JsonPropertyName("lastDeliveryMutation")]
         public DateTime? LastDeliveryMutation { get; set; }
 
         /// <summary>
         /// Gets/sets the next scheduled 'complete' delivery, or null if none.
         /// </summary>
-        [JsonProperty(PropertyName = "nextDeliveryComplete")]
+        [JsonPropertyName("nextDeliveryComplete")]
         public DateTime? NextDeliveryComplete { get; set; }
 
         /// <summary>
         /// Gets/sets the next scheduled 'mutation' delivery, or null if none.
         /// </summary>
-        [JsonProperty(PropertyName = "nextDeliveryMutation")]
+        [JsonPropertyName("nextDeliveryMutation")]
         public DateTime? NextDeliveryMutation { get; set; }
     }
 }

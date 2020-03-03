@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace PostcodeNLDataAPI.Entities
 {
@@ -11,55 +11,55 @@ namespace PostcodeNLDataAPI.Entities
         /// <summary>
         /// Gets/sets the identifier for this specific delivery.
         /// </summary>
-        [JsonProperty(PropertyName = "deliveryId")]
+        [JsonPropertyName("deliveryId")]
         public string Id { get; set; }
 
         /// <summary>
         /// Gets/sets the identifier for the account this delivery belongs to.
         /// </summary>
-        [JsonProperty(PropertyName = "accountId")]
+        [JsonPropertyName("accountId")]
         public long AccountId { get; set; }
 
         /// <summary>
         /// <see cref="PostcodeNLDataAPI.DeliveryType"/>.
         /// </summary>
-        [JsonProperty(PropertyName = "deliveryType")]
+        [JsonPropertyName("deliveryType")]
         public DeliveryType DeliveryType { get; set; }
 
         /// <summary>
         /// Gets/sets a unique string defining the product.
         /// </summary>
-        [JsonProperty(PropertyName = "productCode")]
+        [JsonPropertyName("productCode")]
         public string ProductCode { get; set; }
 
         /// <summary>
         /// Gets/sets a short description of the product.
         /// </summary>
-        [JsonProperty(PropertyName = "productName")]
+        [JsonPropertyName("productName")]
         public string ProductName { get; set; }
 
         /// <summary>
         /// Gets/sets the source reference data, or null if a complete delivery.
         /// </summary>
-        [JsonProperty(PropertyName = "deliverySource")]
+        [JsonPropertyName("deliverySource")]
         public DateTime? DeliverySource { get; set; }
 
         /// <summary>
         /// Gets/sets the target reference date.
         /// </summary>
-        [JsonProperty(PropertyName = "deliveryTarget")]
+        [JsonPropertyName("deliveryTarget")]
         public DateTime DeliveryTarget { get; set; }
 
         /// <summary>
         /// Gets/sets the unique url from which the delivery can be downloaded.
         /// </summary>
-        [JsonProperty(PropertyName = "downloadUrl")]
+        [JsonPropertyName("downloadUrl")]
         public Uri DownloadUrl { get; set; }
 
         /// <summary>
         /// Gets/sets the number of times this delivery has been downloaded.
         /// </summary>
-        [JsonProperty(PropertyName = "downloads")]
+        [JsonPropertyName("downloads")]
         public int DownloadCount { get; set; }
     }
 }

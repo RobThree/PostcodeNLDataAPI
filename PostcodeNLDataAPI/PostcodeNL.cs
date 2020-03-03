@@ -1,14 +1,13 @@
-﻿using Newtonsoft.Json;
-using PostcodeNLDataAPI.Entities;
+﻿using PostcodeNLDataAPI.Entities;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PostcodeNLDataAPI
@@ -37,13 +36,15 @@ namespace PostcodeNLDataAPI
 
         internal const string DATETIMEFORMAT = "yyyyMMdd";
 
-        private static readonly JsonSerializerSettings _serializersettings = new JsonSerializerSettings
+        private static readonly JsonSerializerOptions _serializeroptions = new JsonSerializerOptions
         {
-            Culture = CultureInfo.InvariantCulture,
-            DateFormatString = DATETIMEFORMAT,
-            DateTimeZoneHandling = DateTimeZoneHandling.Unspecified,
-            DateParseHandling = DateParseHandling.DateTime,
-            MissingMemberHandling = MissingMemberHandling.Ignore,
+            //TODO: Set DateTime format and other options that are required. These USED TO BE:
+            
+            //Culture = CultureInfo.InvariantCulture,
+            //DateFormatString = DATETIMEFORMAT,
+            //DateTimeZoneHandling = DateTimeZoneHandling.Unspecified,
+            //DateParseHandling = DateParseHandling.DateTime,
+            //MissingMemberHandling = MissingMemberHandling.Ignore
         };
 
         /// <summary>
@@ -126,8 +127,8 @@ namespace PostcodeNLDataAPI
                 throw new ArgumentException("Base URI must be absolute", nameof(baseUri));
 
             _httpmessagehandler = httpMessageHandler;
-            this.Credentials = credentials ?? throw new ArgumentNullException(nameof(credentials));
-            this.BaseUri = baseUri;
+            Credentials = credentials ?? throw new ArgumentNullException(nameof(credentials));
+            BaseUri = baseUri;
         }
 
         /// <summary>
@@ -145,10 +146,10 @@ namespace PostcodeNLDataAPI
 
             using (var client = _httpmessagehandler == null ? new HttpClient() : new HttpClient(_httpmessagehandler))
             {
-                client.BaseAddress = this.BaseUri;
+                client.BaseAddress = BaseUri;
 
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{this.Credentials.UserName}:{this.Credentials.Password}")));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{Credentials.UserName}:{Credentials.Password}")));
 
                 // Execute GET request
                 using (var response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false))
@@ -161,7 +162,7 @@ namespace PostcodeNLDataAPI
                     if (response.IsSuccessStatusCode)
                     {
                         // It was; parse the returned JSON content and return the desired object
-                        return JsonConvert.DeserializeObject<T>(content, _serializersettings);
+                        return JsonSerializer.Deserialize<T>(content, _serializeroptions);
                     }
                     else
                     {
@@ -171,7 +172,7 @@ namespace PostcodeNLDataAPI
                         ExceptionDetails exceptiondetails = null;
                         try
                         {
-                            exceptiondetails = JsonConvert.DeserializeObject<ExceptionDetails>(content, _serializersettings);
+                            exceptiondetails = JsonSerializer.Deserialize<ExceptionDetails>(content, _serializeroptions);
                         }
                         catch
                         {
@@ -189,10 +190,7 @@ namespace PostcodeNLDataAPI
         /// </summary>
         /// <param name="accountId">Identifier of the subscription account to return.</param>
         /// <returns>Returns the specified subscription account.</returns>
-        public Task<Account> GetAccountAsync(long accountId)
-        {
-            return DoRequest<Account>(BuildUri($"subscription/accounts/{accountId}"));
-        }
+        public Task<Account> GetAccountAsync(long accountId) => DoRequest<Account>(BuildUri($"subscription/accounts/{accountId}"));
 
 
         /// <summary>
@@ -292,7 +290,7 @@ namespace PostcodeNLDataAPI
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentNullException(nameof(path));
 
-            if (!Uri.TryCreate(this.BaseUri, path, out var requesturi))
+            if (!Uri.TryCreate(BaseUri, path, out var requesturi))
                 throw new PostcodeNLException(new ExceptionDetails { Exception = "Invalid URI" }, null, null);
 
             if (queryArgs != null && queryArgs.Count > 0)
@@ -312,11 +310,11 @@ namespace PostcodeNLDataAPI
     /// </summary>
     internal class ExceptionDetails
     {
-        [JsonProperty(PropertyName = "exception")]
+        [JsonPropertyName("exception")]
         public string Exception { get; set; }
-        [JsonProperty(PropertyName = "exceptionId")]
+        [JsonPropertyName("exceptionId")]
         public string ExceptionId { get; set; }
-        [JsonProperty(PropertyName = "requestId")]
+        [JsonPropertyName("requestId")]
         public string RequestId { get; set; }
     }
 }
