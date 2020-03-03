@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace PostcodeNLDownloader
 {
-    class Program
+    internal class Program
     {
-        static int Main(string[] args)
+        private static int Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {
@@ -52,8 +52,7 @@ namespace PostcodeNLDownloader
                     return 1;
                 }
 
-                if (Enum.TryParse(deliveryTypeArgument.Value, true, out
-                DeliveryType dt))
+                if (Enum.TryParse<DeliveryType>(deliveryTypeArgument.Value, true, out var dt))
                 {
                     await DownloadFiles(
                         keyArgument.Value,
@@ -76,7 +75,7 @@ namespace PostcodeNLDownloader
             return app.Execute(args);
         }
 
-        static async Task DownloadFiles(string key, string secret, string path, DeliveryType deliveryType, string productcode, bool overwrite, bool verbose)
+        private static async Task DownloadFiles(string key, string secret, string path, DeliveryType deliveryType, string productcode, bool overwrite, bool verbose)
         {
             var pcnl = new PostcodeNL(key, secret);
             Log(verbose, "Retrieving accounts...");
@@ -106,7 +105,7 @@ namespace PostcodeNLDownloader
             }
         }
 
-        static void Log(bool verbose, string message)
+        private static void Log(bool verbose, string message)
         {
             if (verbose)
                 Console.WriteLine(message);
