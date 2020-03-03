@@ -43,7 +43,7 @@ namespace PostcodeNLDataAPI.Entities
         /// </summary>
         [JsonPropertyName("lastDeliveryComplete")]
         public DateTime? LastDeliveryComplete { get; set; }
-        
+
         /// <summary>
         /// Gets/sets the last created 'mutation' delivery, or null if none.
         /// </summary>

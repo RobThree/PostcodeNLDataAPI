@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.Globalization;
 
 namespace PostcodeNLDataAPI
 {
@@ -33,16 +33,18 @@ namespace PostcodeNLDataAPI
         internal IDictionary<string, string> AsKeyValueCollection()
         {
             var d = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            if (this.AccountId.HasValue)
-                d.Add("accountId", this.AccountId.Value.ToString());
-            if (this.DeliveryType.HasValue)
-                d.Add("deliveryType", this.DeliveryType.Value.ToString().ToLowerInvariant());
-            if (this.From.HasValue)
-                d.Add("from", this.From.Value.ToString(PostcodeNL.DATETIMEFORMAT));
-            if (this.To.HasValue)
-                d.Add("to", this.To.Value.ToString(PostcodeNL.DATETIMEFORMAT));
-            if (this.After.HasValue)
-                d.Add("after", this.After.Value.ToString(PostcodeNL.DATETIMEFORMAT));
+            if (AccountId.HasValue)
+                d.Add("accountId", AccountId.Value.ToString(CultureInfo.InvariantCulture));
+            if (DeliveryType.HasValue)
+#pragma warning disable CA1308 // Normalize strings to uppercase
+                d.Add("deliveryType", DeliveryType.Value.ToString().ToLowerInvariant());
+#pragma warning restore CA1308 // Normalize strings to uppercase
+            if (From.HasValue)
+                d.Add("from", From.Value.ToString(PostcodeNL.DATETIMEFORMAT, CultureInfo.InvariantCulture));
+            if (To.HasValue)
+                d.Add("to", To.Value.ToString(PostcodeNL.DATETIMEFORMAT, CultureInfo.InvariantCulture));
+            if (After.HasValue)
+                d.Add("after", After.Value.ToString(PostcodeNL.DATETIMEFORMAT, CultureInfo.InvariantCulture));
             return d;
         }
     }

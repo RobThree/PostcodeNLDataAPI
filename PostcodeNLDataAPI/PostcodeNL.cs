@@ -1,6 +1,7 @@
 ﻿using PostcodeNLDataAPI.Entities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -39,7 +40,7 @@ namespace PostcodeNLDataAPI
         private static readonly JsonSerializerOptions _serializeroptions = new JsonSerializerOptions
         {
             //TODO: Set DateTime format and other options that are required. These USED TO BE:
-            
+
             //Culture = CultureInfo.InvariantCulture,
             //DateFormatString = DATETIMEFORMAT,
             //DateTimeZoneHandling = DateTimeZoneHandling.Unspecified,
@@ -174,7 +175,7 @@ namespace PostcodeNLDataAPI
                         {
                             exceptiondetails = JsonSerializer.Deserialize<ExceptionDetails>(content, _serializeroptions);
                         }
-                        catch
+                        catch (JsonException)
                         {
                             // Well, apparently the response wasn't an "error JSON document"... Create a "generic" exception
                             exceptiondetails = new ExceptionDetails { Exception = "Error executing request" };
@@ -264,7 +265,9 @@ namespace PostcodeNLDataAPI
         /// <param name="fileName">The name of the file to be placed on the local computer.</param>
         /// <returns>Returns <see cref="Task"/>. The task object representing the asynchronous operation.</returns>
         /// <exception cref="ArgumentNullException">Thrown when uri or filename is null.</exception>
+#pragma warning disable CA1822 // Mark members as static
         public Task DownloadFileAsync(Uri uri, string fileName)
+#pragma warning restore CA1822 // Mark members as static
         {
             if (uri == null)
                 throw new ArgumentNullException(nameof(uri));
@@ -297,7 +300,7 @@ namespace PostcodeNLDataAPI
             {
                 var builder = new UriBuilder(requesturi)
                 {
-                    Query = string.Join("&", queryArgs.Select(kvp => string.Format("{0}={1}", WebUtility.UrlEncode(kvp.Key), WebUtility.UrlEncode(kvp.Value))))
+                    Query = string.Join("&", queryArgs.Select(kvp => string.Format(CultureInfo.InvariantCulture, "{0}={1}", WebUtility.UrlEncode(kvp.Key), WebUtility.UrlEncode(kvp.Value))))
                 };
                 requesturi = builder.Uri;
             }

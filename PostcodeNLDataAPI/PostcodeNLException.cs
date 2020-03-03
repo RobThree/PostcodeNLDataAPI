@@ -32,10 +32,10 @@ namespace PostcodeNLDataAPI
         internal PostcodeNLException(ExceptionDetails exceptionDetails, Uri uri, HttpResponseMessage httpResponseMessage, Exception innerException)
             : base(exceptionDetails.Exception, innerException)
         {
-            this.ExceptionId = exceptionDetails.ExceptionId;
-            this.RequestId = exceptionDetails.RequestId;
-            this.HttpResponseMessage = httpResponseMessage;
-            this.Uri = uri;
+            ExceptionId = exceptionDetails.ExceptionId;
+            RequestId = exceptionDetails.RequestId;
+            HttpResponseMessage = httpResponseMessage;
+            Uri = uri;
         }
     }
 }
