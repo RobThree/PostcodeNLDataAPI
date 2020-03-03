@@ -61,6 +61,7 @@ namespace PostcodeNLDataAPI.Entities
         /// Gets/sets the number of times this delivery has been downloaded.
         /// </summary>
         [JsonPropertyName("downloads")]
+        [JsonConverter(typeof(IntStringConverter))]
         public int DownloadCount { get; set; }
     }
 }

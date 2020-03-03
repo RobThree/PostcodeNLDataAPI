@@ -34,6 +34,23 @@ namespace PostcodeNLDataAPI
         }
     }
 
+    public class IntStringConverter : JsonConverter<int>
+    {
+        public override int Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (typeToConvert != typeof(int))
+                throw new InvalidOperationException();
+            return int.TryParse(reader.GetString(), out var result) ? result : 0;
+        }
+
+        public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options)
+        {
+            if (writer == null)
+                throw new ArgumentNullException(nameof(writer));
+            writer.WriteStringValue(value.ToString(CultureInfo.InvariantCulture));
+        }
+    }
+
     public class EnumConverter<T> : JsonConverter<T>
          where T : struct
     {

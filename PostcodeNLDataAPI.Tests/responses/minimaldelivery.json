@@ -6,5 +6,5 @@
     "deliveryType": "mutation",
     "deliveryTarget": "20150101",
     "downloadUrl": "https://retrieve.postcode.nl/abc",
-    "downloads": 5
+    "downloads": "5"
 }

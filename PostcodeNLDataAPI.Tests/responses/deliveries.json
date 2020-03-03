@@ -8,7 +8,7 @@
         "deliverySource": "20150112",
         "deliveryTarget": "20150119",
         "downloadUrl": "https://retrieve.postcode.nl/aca76d844cbd999358475d9fe164d346",
-        "downloads": 0
+        "downloads": "0"
     },
     {
         "deliveryId": "80e5b3f23d20fc0e237e61b644d1e891",
@@ -19,6 +19,6 @@
         "deliverySource": "20150105",
         "deliveryTarget": "20150112",
         "downloadUrl": "https://retrieve.postcode.nl/80e5b3f23d20fc0e237e61b644d1e891",
-        "downloads": 1
+        "downloads": "1"
     }
 ]
