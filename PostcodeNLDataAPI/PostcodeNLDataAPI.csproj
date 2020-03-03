@@ -8,9 +8,9 @@
     <Copyright>((C) 2016 - 2020 Devcorner.nl</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>postcode postcode.nl data api</PackageTags>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>NetStandard 2.0 support</PackageReleaseNotes>
     <Description>A .Net library that provides an (unofficial) Postcode.nl DATA API implementation</Description>
-    <Version>1.0</Version>
+    <Version>1.1</Version>
     <LangVersion>latest</LangVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/RobThree/PostcodeNLDataAPI</PackageProjectUrl>

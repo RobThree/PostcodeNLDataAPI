@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostcodeNLDataAPI", "PostcodeNLDataAPI\PostcodeNLDataAPI.csproj", "{EC441F5D-A6BB-40A5-87DD-5926F0E9EB9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostcodeNLDataAPI", "PostcodeNLDataAPI\PostcodeNLDataAPI.csproj", "{EC441F5D-A6BB-40A5-87DD-5926F0E9EB9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostcodeNLDataAPI.Tests", "PostcodeNLDataAPI.Tests\PostcodeNLDataAPI.Tests.csproj", "{B4DCEE16-AD64-4773-B16C-8B8F8BE68607}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostcodeNLDataAPI.Tests", "PostcodeNLDataAPI.Tests\PostcodeNLDataAPI.Tests.csproj", "{B4DCEE16-AD64-4773-B16C-8B8F8BE68607}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostcodeNLDownloader", "PostcodeNLDownloader\PostcodeNLDownloader.csproj", "{BB805240-D4C1-44F4-BF6E-3953A26F6FC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostcodeNLDownloader", "PostcodeNLDownloader\PostcodeNLDownloader.csproj", "{BB805240-D4C1-44F4-BF6E-3953A26F6FC7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7F8DD239-8020-4468-BD0A-96875B97B3F1}"
 	ProjectSection(SolutionItems) = preProject
@@ -38,6 +38,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {8615CC49-BC3B-4A08-8306-9376F01E6FBC}
+		SolutionGuid = {D598F098-A357-4320-8557-335591576FA0}
 	EndGlobalSection
 EndGlobal
