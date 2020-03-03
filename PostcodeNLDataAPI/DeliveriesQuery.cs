@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 
 namespace PostcodeNLDataAPI
@@ -29,20 +30,20 @@ namespace PostcodeNLDataAPI
         /// </summary>
         public DateTime? After { get; set; }
 
-        internal NameValueCollection AsNameValueCollection()
+        internal IDictionary<string, string> AsKeyValueCollection()
         {
-            var nvc = new NameValueCollection();
+            var d = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             if (this.AccountId.HasValue)
-                nvc["accountId"] = this.AccountId.Value.ToString();
+                d.Add("accountId", this.AccountId.Value.ToString());
             if (this.DeliveryType.HasValue)
-                nvc["deliveryType"] = this.DeliveryType.Value.ToString().ToLowerInvariant();
+                d.Add("deliveryType", this.DeliveryType.Value.ToString().ToLowerInvariant());
             if (this.From.HasValue)
-                nvc["from"] = this.From.Value.ToString(PostcodeNL.DATETIMEFORMAT);
+                d.Add("from", this.From.Value.ToString(PostcodeNL.DATETIMEFORMAT));
             if (this.To.HasValue)
-                nvc["to"] = this.To.Value.ToString(PostcodeNL.DATETIMEFORMAT);
+                d.Add("to", this.To.Value.ToString(PostcodeNL.DATETIMEFORMAT));
             if (this.After.HasValue)
-                nvc["after"] = this.After.Value.ToString(PostcodeNL.DATETIMEFORMAT);
-            return nvc;
+                d.Add("after", this.After.Value.ToString(PostcodeNL.DATETIMEFORMAT));
+            return d;
         }
     }
 }

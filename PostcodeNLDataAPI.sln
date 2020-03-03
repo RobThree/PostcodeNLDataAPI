@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostcodeNLDataAPI", "PostcodeNLDataAPI\PostcodeNLDataAPI.csproj", "{EC441F5D-A6BB-40A5-87DD-5926F0E9EB9E}"
 EndProject
@@ -12,7 +12,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7F8DD239-8020-4468-BD0A-96875B97B3F1}"
 	ProjectSection(SolutionItems) = preProject
 		Docs\PC-Data-API-Spec-v1.0-r83.pdf = Docs\PC-Data-API-Spec-v1.0-r83.pdf
-		PostcodeNLDataAPI.nuspec = PostcodeNLDataAPI.nuspec
 	EndProjectSection
 EndProject
 Global
@@ -36,5 +35,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8615CC49-BC3B-4A08-8306-9376F01E6FBC}
 	EndGlobalSection
 EndGlobal

@@ -56,12 +56,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PostcodeNLDataAPI\PostcodeNLDataAPI.csproj">
-      <Project>{ec441f5d-a6bb-40a5-87dd-5926f0e9eb9e}</Project>
-      <Name>PostcodeNLDataAPI</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="responses\account.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -83,6 +77,12 @@
     <None Include="responses\minimaldelivery.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PostcodeNLDataAPI\PostcodeNLDataAPI.csproj">
+      <Project>{ec441f5d-a6bb-40a5-87dd-5926f0e9eb9e}</Project>
+      <Name>PostcodeNLDataAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

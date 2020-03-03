@@ -14,8 +14,7 @@ namespace PostcodeNLDownloader
         {
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
             {
-                var ex = e.ExceptionObject as Exception;
-                if (ex != null)
+                if (e.ExceptionObject is Exception ex)
                     Console.WriteLine(ex.Message);
                 Environment.Exit(-1);
             };
@@ -53,8 +52,8 @@ namespace PostcodeNLDownloader
                     return 1;
                 }
 
-                DeliveryType dt;
-                if (Enum.TryParse(deliveryTypeArgument.Value, true, out dt))
+                if (Enum.TryParse(deliveryTypeArgument.Value, true, out
+                DeliveryType dt))
                 {
                     await DownloadFiles(
                         keyArgument.Value,

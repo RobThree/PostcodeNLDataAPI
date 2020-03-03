@@ -33,7 +33,7 @@ namespace PostcodeNLDataAPI
         /// </summary>
         public static readonly Uri DEFAULTURI = new Uri("https://data.postcode.nl/rest/");
 
-        private HttpMessageHandler _httpmessagehandler = null;
+        private readonly HttpMessageHandler _httpmessagehandler = null;
 
         internal const string DATETIMEFORMAT = "yyyyMMdd";
 
@@ -120,15 +120,13 @@ namespace PostcodeNLDataAPI
         /// <exception cref="ArgumentException">Thrown when base uri is not an absolute uri.</exception>
         public PostcodeNL(NetworkCredential credentials, Uri baseUri, HttpMessageHandler httpMessageHandler)
         {
-            if (credentials == null)
-                throw new ArgumentNullException(nameof(credentials));
             if (baseUri == null)
                 throw new ArgumentNullException(nameof(baseUri));
             if (!baseUri.IsAbsoluteUri)
                 throw new ArgumentException("Base URI must be absolute", nameof(baseUri));
 
             _httpmessagehandler = httpMessageHandler;
-            this.Credentials = credentials;
+            this.Credentials = credentials ?? throw new ArgumentNullException(nameof(credentials));
             this.BaseUri = baseUri;
         }
 
@@ -204,11 +202,11 @@ namespace PostcodeNLDataAPI
         /// <returns>Returns the subscription accounts available to the client.</returns>
         public Task<IEnumerable<Account>> ListAccountsAsync(string productCode = null)
         {
-            var nvc = new NameValueCollection();
+            var d = new Dictionary<string, string>();
             if (productCode != null)
-                nvc["productCode"] = productCode;
+                d.Add("productCode", productCode);
 
-            return DoRequest<IEnumerable<Account>>(BuildUri("subscription/accounts", nvc));
+            return DoRequest<IEnumerable<Account>>(BuildUri("subscription/accounts", d));
         }
 
 
@@ -239,7 +237,7 @@ namespace PostcodeNLDataAPI
                 throw new ArgumentNullException(nameof(query));
 
             // Make sure we have at least one search-argument
-            var nvc = query.AsNameValueCollection();
+            var nvc = query.AsKeyValueCollection();
             if (nvc.Count == 0)
                 throw new InvalidOperationException("No query arguments provided");
 
@@ -285,25 +283,24 @@ namespace PostcodeNLDataAPI
         /// Builds a uri based on this instance's Base Uri and a given (relative) path with optional querystring arguments.
         /// </summary>
         /// <param name="path">The relative path.</param>
-        /// <param name="query">Querystring arguments (key/value pairs).</param>
+        /// <param name="queryArgs">Querystring arguments (key/value pairs).</param>
         /// <returns>Returns a composed ("built") uri.</returns>
         /// <exception cref="ArgumentNullException">Thrown when path is null or empty.</exception>
         /// <exception cref="PostcodeNLException">Thrown when the baseuri + path results in an invalid URI.</exception>
-        private Uri BuildUri(string path, NameValueCollection query = null)
+        private Uri BuildUri(string path, IDictionary<string, string> queryArgs = null)
         {
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentNullException(nameof(path));
 
-            Uri requesturi;
-            if (!Uri.TryCreate(this.BaseUri, path, out requesturi))
+            if (!Uri.TryCreate(this.BaseUri, path, out var requesturi))
                 throw new PostcodeNLException(new ExceptionDetails { Exception = "Invalid URI" }, null, null);
 
-            if (query != null && query.Count > 0)
+            if (queryArgs != null && queryArgs.Count > 0)
             {
-                var builder = new UriBuilder(requesturi);
-                builder.Query = string.Join("&",
-                        query.AllKeys.Where(key => !string.IsNullOrWhiteSpace(query[key]))
-                            .Select(key => string.Join("&", query.GetValues(key).Select(val => string.Format("{0}={1}", WebUtility.UrlEncode(key), WebUtility.UrlEncode(val))))));
+                var builder = new UriBuilder(requesturi)
+                {
+                    Query = string.Join("&", queryArgs.Select(kvp => string.Format("{0}={1}", WebUtility.UrlEncode(kvp.Key), WebUtility.UrlEncode(kvp.Value))))
+                };
                 requesturi = builder.Uri;
             }
             return requesturi;

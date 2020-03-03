@@ -33,8 +33,10 @@ namespace PostcodeNLDataAPI.Tests
 
         public FakeResponseHandler AddJsonResponse(Uri uri, string json, HttpStatusCode httpStatusCode)
         {
-            var responsemsg = new HttpResponseMessage(httpStatusCode);
-            responsemsg.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            var responsemsg = new HttpResponseMessage(httpStatusCode)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
             _FakeResponses.Add(uri, responsemsg);
             return this;
         }
