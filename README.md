@@ -67,4 +67,4 @@ Options:
 
 ## Test Suite
 
-[![Build status](https://ci.appveyor.com/api/projects/status/iq9vaikslv4ru67k?svg=true)](https://ci.appveyor.com/project/RobIII/postcodenldataapi) <a href="https://www.nuget.org/packages/PostcodeNLDataAPI/"><img src="https://img.shields.io/nuget/v/PostcodeNLDataAPI.svg?style=flat-square" alt="NuGet version"></a>
+[![Build status](https://ci.appveyor.com/api/projects/status/jmmub0w2kga3y7lf?svg=true)](https://ci.appveyor.com/project/RobIII/postcodenldataapi) <a href="https://www.nuget.org/packages/PostcodeNLDataAPI/"><img src="https://img.shields.io/nuget/v/PostcodeNLDataAPI.svg?style=flat-square" alt="NuGet version"></a>
