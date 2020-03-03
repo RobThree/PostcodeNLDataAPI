@@ -24,6 +24,7 @@ namespace PostcodeNLDataAPI.Entities
         /// <see cref="PostcodeNLDataAPI.DeliveryType"/>.
         /// </summary>
         [JsonPropertyName("deliveryType")]
+        [JsonConverter(typeof(EnumConverter<DeliveryType>))]
         public DeliveryType DeliveryType { get; set; }
 
         /// <summary>

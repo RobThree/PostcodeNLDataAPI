@@ -13,6 +13,52 @@ using System.Threading.Tasks;
 
 namespace PostcodeNLDataAPI
 {
+    public class DateTimeConverter : JsonConverter<DateTime>
+    {
+        public string DateTimeFormat { get; private set; }
+
+        public DateTimeConverter(string dateTimeFormat) => DateTimeFormat = dateTimeFormat ?? throw new ArgumentNullException(nameof(dateTimeFormat));
+
+        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (typeToConvert != typeof(DateTime))
+                throw new InvalidOperationException();
+            return DateTime.ParseExact(reader.GetString(), DateTimeFormat, CultureInfo.InvariantCulture);
+        }
+
+        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+        {
+            if (writer == null)
+                throw new ArgumentNullException(nameof(writer));
+            writer.WriteStringValue(value.ToString(DateTimeFormat, CultureInfo.InvariantCulture));
+        }
+    }
+
+    public class EnumConverter<T> : JsonConverter<T>
+         where T : struct
+    {
+        public string DateTimeFormat { get; private set; }
+
+        public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (typeToConvert != typeof(T))
+                throw new InvalidOperationException();
+            var value = reader.GetString();
+            if (Enum.TryParse<T>(value, true, out var result))
+                return result;
+            throw new ArgumentException($"'{value}' is not a valid value for '{typeof(T)}");
+        }
+
+        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+        {
+            if (writer == null)
+                throw new ArgumentNullException(nameof(writer));
+#pragma warning disable CA1308 // Normalize strings to uppercase
+            writer.WriteStringValue(value.ToString().ToLowerInvariant());
+#pragma warning restore CA1308 // Normalize strings to uppercase
+        }
+    }
+
     /// <summary>
     /// Implementation of the Postcode.nl DATA API.
     /// </summary>
@@ -37,16 +83,7 @@ namespace PostcodeNLDataAPI
 
         internal const string DATETIMEFORMAT = "yyyyMMdd";
 
-        private static readonly JsonSerializerOptions _serializeroptions = new JsonSerializerOptions
-        {
-            //TODO: Set DateTime format and other options that are required. These USED TO BE:
-
-            //Culture = CultureInfo.InvariantCulture,
-            //DateFormatString = DATETIMEFORMAT,
-            //DateTimeZoneHandling = DateTimeZoneHandling.Unspecified,
-            //DateParseHandling = DateParseHandling.DateTime,
-            //MissingMemberHandling = MissingMemberHandling.Ignore
-        };
+        private readonly JsonSerializerOptions _serializeroptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostcodeNL"/> class using the default base URI.
@@ -130,6 +167,9 @@ namespace PostcodeNLDataAPI
             _httpmessagehandler = httpMessageHandler;
             Credentials = credentials ?? throw new ArgumentNullException(nameof(credentials));
             BaseUri = baseUri;
+
+            _serializeroptions = new JsonSerializerOptions() { };
+            _serializeroptions.Converters.Add(new DateTimeConverter(DATETIMEFORMAT));
         }
 
         /// <summary>
@@ -175,7 +215,9 @@ namespace PostcodeNLDataAPI
                         {
                             exceptiondetails = JsonSerializer.Deserialize<ExceptionDetails>(content, _serializeroptions);
                         }
-                        catch (JsonException)
+#pragma warning disable CA1031 // Do not catch general exception types
+                        catch
+#pragma warning restore CA1031 // Do not catch general exception types
                         {
                             // Well, apparently the response wasn't an "error JSON document"... Create a "generic" exception
                             exceptiondetails = new ExceptionDetails { Exception = "Error executing request" };

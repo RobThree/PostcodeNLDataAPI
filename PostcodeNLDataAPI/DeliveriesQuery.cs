@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace PostcodeNLDataAPI
 {
@@ -16,6 +17,7 @@ namespace PostcodeNLDataAPI
         /// <summary>
         /// <see cref="PostcodeNLDataAPI.DeliveryType"/>.
         /// </summary>
+        [JsonConverter(typeof(EnumConverter<DeliveryType>))]
         public DeliveryType? DeliveryType { get; set; }
         /// <summary>
         /// Deliveries with target date greater than, or equal to, this date.
