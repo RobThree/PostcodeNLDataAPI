@@ -151,11 +151,11 @@ namespace PostcodeNLDataAPI
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{this.Credentials.UserName}:{this.Credentials.Password}")));
 
                 // Execute GET request
-                using (var response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead))
+                using (var response = await client.GetAsync(uri, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false))
                 {
                     string content = null;
                     if (response.Content != null)
-                        content = await response.Content.ReadAsStringAsync();
+                        content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                     // Was the request successful?
                     if (response.IsSuccessStatusCode)
