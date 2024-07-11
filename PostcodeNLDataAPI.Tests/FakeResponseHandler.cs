@@ -2,58 +2,53 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PostcodeNLDataAPI.Tests
+namespace PostcodeNLDataAPI.Tests;
+
+public class FakeResponseHandler : DelegatingHandler
 {
-    public class FakeResponseHandler : DelegatingHandler
+    private readonly Dictionary<Uri, HttpResponseMessage> _fakeresponses = [];
+
+
+    public FakeResponseHandler AddResponse(Uri uri, HttpResponseMessage responseMessage)
     {
-        private readonly Dictionary<Uri, HttpResponseMessage> _FakeResponses = new Dictionary<Uri, HttpResponseMessage>();
+        _fakeresponses.Add(uri, responseMessage);
+        return this;
+    }
+
+    public FakeResponseHandler AddEmptyResponse(Uri uri, HttpStatusCode httpStatusCode)
+    {
+        _fakeresponses.Add(uri, new HttpResponseMessage(httpStatusCode));
+        return this;
+    }
 
 
-        public FakeResponseHandler AddResponse(Uri uri, HttpResponseMessage responseMessage)
+    public FakeResponseHandler AddJsonResponse(Uri uri, string json) => AddJsonResponse(uri, json, HttpStatusCode.OK);
+
+    public FakeResponseHandler AddJsonResponse(Uri uri, string json, HttpStatusCode httpStatusCode)
+    {
+        var responsemsg = new HttpResponseMessage(httpStatusCode)
         {
-            _FakeResponses.Add(uri, responseMessage);
-            return this;
+            Content = new StringContent(json, Encoding.UTF8, "application/json")
+        };
+        _fakeresponses.Add(uri, responsemsg);
+        return this;
+    }
+
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+    {
+        if (_fakeresponses.TryGetValue(request.RequestUri, out var value))
+        {
+            var response = value;
+            response.RequestMessage = request;
+            return Task.FromResult(response);
+        }
+        else
+        {
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request });
         }
 
-        public FakeResponseHandler AddEmptyResponse(Uri uri, HttpStatusCode httpStatusCode)
-        {
-            _FakeResponses.Add(uri, new HttpResponseMessage(httpStatusCode));
-            return this;
-        }
-
-
-        public FakeResponseHandler AddJsonResponse(Uri uri, string json)
-        {
-            return AddJsonResponse(uri, json, HttpStatusCode.OK);
-        }
-
-        public FakeResponseHandler AddJsonResponse(Uri uri, string json, HttpStatusCode httpStatusCode)
-        {
-            var responsemsg = new HttpResponseMessage(httpStatusCode)
-            {
-                Content = new StringContent(json, Encoding.UTF8, "application/json")
-            };
-            _FakeResponses.Add(uri, responsemsg);
-            return this;
-        }
-
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
-        {
-            if (_FakeResponses.ContainsKey(request.RequestUri))
-            {
-                var response = _FakeResponses[request.RequestUri];
-                response.RequestMessage = request;
-                return Task.FromResult(response);
-            }
-            else
-            {
-                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request });
-            }
-
-        }
     }
 }
